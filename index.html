@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Authentication Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content auth-modal-content">
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" onclick="showAuthTab('login')">Login</button>
+                <button class="auth-tab-btn" onclick="showAuthTab('signup')">Sign Up</button>
+            </div>
+            
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form active">
+                <h2>Welcome Back!</h2>
+                <form id="loginFormElement" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">Email *</label>
+                        <input type="email" id="loginEmail" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password *</label>
+                        <input type="password" id="loginPassword" required placeholder="Enter your password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+                <p class="auth-switch">Don't have an account? <a href="#" onclick="showAuthTab('signup'); return false;">Sign up</a></p>
+            </div>
+            
+            <!-- Sign Up Form -->
+            <div id="signupForm" class="auth-form">
+                <h2>Create Account</h2>
+                <form id="signupFormElement" onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label for="signupName">Full Name *</label>
+                        <input type="text" id="signupName" required placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">Email *</label>
+                        <input type="email" id="signupEmail" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password *</label>
+                        <input type="password" id="signupPassword" required placeholder="Create a password" minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupConfirmPassword">Confirm Password *</label>
+                        <input type="password" id="signupConfirmPassword" required placeholder="Confirm your password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Sign Up</button>
+                </form>
+                <p class="auth-switch">Already have an account? <a href="#" onclick="showAuthTab('login'); return false;">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="mainContainer" style="display: none;">
+        <header>
+            <div class="header-top">
+                <div>
+                    <h1>📋 Job Application Tracker</h1>
+                    <p class="subtitle">Stay organized during your job search</p>
+                </div>
+                <div class="user-info">
+                    <span id="userName">User</span>
+                    <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs">
+            <button class="tab-btn active" onclick="showTab('applications')">Applications</button>
+            <button class="tab-btn" onclick="showTab('analytics')">📊 Analytics</button>
+        </nav>
+
+        <!-- Applications Tab Content -->
+        <div id="applicationsTab" class="tab-content active">
+            <section class="add-application">
+                <h2>Add New Application</h2>
+                <form id="applicationForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="companyName">Company Name *</label>
+                            <input type="text" id="companyName" required placeholder="Enter company name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="role">Role/Position *</label>
+                            <input type="text" id="role" required placeholder="Enter job role">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dateApplied">Date Applied *</label>
+                            <input type="date" id="dateApplied" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="status">Status *</label>
+                            <select id="status" required>
+                                <option value="Applied">Applied</option>
+                                <option value="Interview">Interview</option>
+                                <option value="Selected">Selected</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="interviewDate">Interview Date (Optional)</label>
+                        <input type="date" id="interviewDate" placeholder="If applicable">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Notes (Optional)</label>
+                        <textarea id="notes" rows="3" placeholder="Add any additional notes..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="followUpNeeded">
+                            <span>Mark for follow-up</span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Add Application</button>
+                </form>
+            </section>
+
+            <section class="applications-list">
+                <div class="list-header">
+                    <h2>Your Applications</h2>
+                    <span id="applicationCount" class="count-badge">0 applications</span>
+                </div>
+
+                <!-- Search, Filter, and Sort Controls -->
+                <div class="controls">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="🔍 Search by company or role..." oninput="filterApplications()">
+                    </div>
+                    <div class="filter-sort">
+                        <select id="statusFilter" onchange="filterApplications()">
+                            <option value="all">All Statuses</option>
+                            <option value="Applied">Applied</option>
+                            <option value="Interview">Interview</option>
+                            <option value="Selected">Selected</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                        <select id="sortBy" onchange="filterApplications()">
+                            <option value="date-desc">Date (Newest)</option>
+                            <option value="date-asc">Date (Oldest)</option>
+                            <option value="company-asc">Company (A-Z)</option>
+                            <option value="company-desc">Company (Z-A)</option>
+                            <option value="status">Status</option>
+                        </select>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="showFollowUpOnly" onchange="filterApplications()">
+                            <span>Follow-up needed only</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div id="applicationsContainer">
+                    <div class="empty-state" id="emptyState">
+                        <p>No applications yet. Add your first job application above!</p>
+                    </div>
+                    <table id="applicationsTable" class="applications-table" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Role</th>
+                                <th>Date Applied</th>
+                                <th>Status</th>
+                                <th>Follow-up</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicationsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Analytics Tab Content -->
+        <div id="analyticsTab" class="tab-content">
+            <section class="analytics-section">
+                <h2>📊 Application Analytics</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-value" id="totalApplications">0</div>
+                        <div class="stat-label">Total Applications</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💼</div>
+                        <div class="stat-value" id="totalInterviews">0</div>
+                        <div class="stat-label">Interviews</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value" id="successRate">0%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-value" id="applicationsThisWeek">0</div>
+                        <div class="stat-label">This Week</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3>Applications by Status</h3>
+                    <canvas id="statusChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <h3>Applications Over Time (Last 8 Weeks)</h3>
+                    <canvas id="timeChart"></canvas>
+                </div>
+            </section>
+        </div>
+
+        <!-- Timeline Modal -->
+        <div id="timelineModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeTimelineModal()">&times;</span>
+                <h2 id="modalCompanyName">Application Timeline</h2>
+                <div id="timelineContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
