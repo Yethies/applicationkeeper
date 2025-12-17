@@ -6,10 +6,11 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #0f0f0f;
+    background-image: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
     min-height: 100vh;
     padding: 20px;
-    color: #333;
+    color: #e0e0e0;
 }
 
 .container {
@@ -32,13 +33,61 @@ header {
     gap: 20px;
 }
 
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, rgba(100, 181, 246, 0.2) 0%, rgba(66, 165, 245, 0.2) 100%);
+    border-radius: 12px;
+    border: 2px solid rgba(100, 181, 246, 0.3);
+    padding: 8px;
+    transition: all 0.3s ease;
+}
+
+.logo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(100, 181, 246, 0.3);
+    border-color: rgba(100, 181, 246, 0.5);
+}
+
+.logo-text {
+    text-align: left;
+}
+
+.logo-text h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #64b5f6 0%, #42a5f5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.logo-text .subtitle {
+    margin: 5px 0 0 0;
+    font-size: 1rem;
+    color: #b0b0b0;
+    font-weight: 400;
+}
+
 .user-info {
     display: flex;
     align-items: center;
     gap: 15px;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(100, 181, 246, 0.2);
     padding: 10px 20px;
     border-radius: 25px;
+    border: 1px solid rgba(100, 181, 246, 0.3);
 }
 
 .user-info span {
@@ -47,22 +96,22 @@ header {
 }
 
 .btn-logout {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 2px solid white;
+    background: rgba(244, 67, 54, 0.2);
+    color: #ef5350;
+    border: 2px solid rgba(244, 67, 54, 0.5);
     padding: 8px 20px;
     font-size: 0.9rem;
 }
 
 .btn-logout:hover {
-    background: white;
-    color: #667eea;
+    background: rgba(244, 67, 54, 0.4);
+    color: #ff6b6b;
+    border-color: rgba(244, 67, 54, 0.7);
 }
 
 header h1 {
     font-size: 2.5rem;
     margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .subtitle {
@@ -71,15 +120,16 @@ header h1 {
 }
 
 section {
-    background: white;
+    background: #1a1a2e;
+    border: 1px solid #2a2a3e;
     border-radius: 12px;
     padding: 30px;
     margin-bottom: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 section h2 {
-    color: #667eea;
+    color: #64b5f6;
     margin-bottom: 20px;
     font-size: 1.5rem;
 }
@@ -97,7 +147,7 @@ section h2 {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #555;
+    color: #b0b0b0;
 }
 
 .form-group input,
@@ -105,10 +155,12 @@ section h2 {
 .form-group textarea {
     width: 100%;
     padding: 12px;
-    border: 2px solid #e0e0e0;
+    background: #0f0f0f;
+    border: 2px solid #2a2a3e;
     border-radius: 8px;
     font-size: 1rem;
     font-family: inherit;
+    color: #e0e0e0;
     transition: border-color 0.3s;
 }
 
@@ -116,7 +168,13 @@ section h2 {
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #64b5f6;
+    background: #151520;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #666;
 }
 
 .form-group textarea {
@@ -134,13 +192,15 @@ section h2 {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: linear-gradient(135deg, #64b5f6 0%, #42a5f5 100%);
+    color: #0f0f0f;
+    font-weight: 700;
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 5px 15px rgba(100, 181, 246, 0.4);
+    background: linear-gradient(135deg, #42a5f5 0%, #2196f3 100%);
 }
 
 .btn-primary:active {
@@ -156,8 +216,8 @@ section h2 {
 }
 
 .count-badge {
-    background: #667eea;
-    color: white;
+    background: #64b5f6;
+    color: #0f0f0f;
     padding: 6px 15px;
     border-radius: 20px;
     font-size: 0.9rem;
@@ -167,7 +227,7 @@ section h2 {
 .empty-state {
     text-align: center;
     padding: 60px 20px;
-    color: #999;
+    color: #888;
     font-size: 1.1rem;
 }
 
@@ -179,7 +239,7 @@ section h2 {
 }
 
 .applications-table thead {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
     color: white;
 }
 
@@ -191,11 +251,16 @@ section h2 {
 
 .applications-table td {
     padding: 15px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #2a2a3e;
+    color: #e0e0e0;
+}
+
+.applications-table tbody tr {
+    background-color: #1a1a2e;
 }
 
 .applications-table tbody tr:hover {
-    background-color: #f5f5f5;
+    background-color: #252540;
 }
 
 .applications-table tbody tr:last-child td {
@@ -214,38 +279,40 @@ section h2 {
 
 .status-select {
     padding: 6px 12px;
-    border: 2px solid #667eea;
+    border: 2px solid #64b5f6;
     border-radius: 6px;
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
-    background-color: white;
+    background-color: #0f0f0f;
+    color: #e0e0e0;
     min-width: 120px;
 }
 
 .status-select:focus {
     outline: none;
-    border-color: #764ba2;
+    border-color: #42a5f5;
+    background-color: #151520;
 }
 
 .status-applied {
-    background-color: #e3f2fd;
-    color: #1976d2;
+    background-color: #1565c0;
+    color: #90caf9;
 }
 
 .status-interview {
-    background-color: #fff3e0;
-    color: #f57c00;
+    background-color: #e65100;
+    color: #ffb74d;
 }
 
 .status-selected {
-    background-color: #e8f5e9;
-    color: #388e3c;
+    background-color: #2e7d32;
+    color: #81c784;
 }
 
 .status-rejected {
-    background-color: #ffebee;
-    color: #d32f2f;
+    background-color: #c62828;
+    color: #ef5350;
 }
 
 /* Action Buttons */
@@ -319,7 +386,17 @@ section h2 {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    header h1 {
+    .logo-container {
+        flex-direction: column;
+        text-align: center;
+        width: 100%;
+    }
+    
+    .logo-text {
+        text-align: center;
+    }
+    
+    .logo-text h1 {
         font-size: 2rem;
     }
     
@@ -406,7 +483,7 @@ section h2 {
     .applications-table td:before {
         content: attr(data-label) ": ";
         font-weight: 600;
-        color: #667eea;
+        color: #64b5f6;
     }
 }
 
@@ -421,8 +498,8 @@ section h2 {
 .tab-btn {
     padding: 12px 30px;
     border: none;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    color: #b0b0b0;
     border-radius: 8px;
     font-size: 1rem;
     font-weight: 600;
@@ -431,12 +508,13 @@ section h2 {
 }
 
 .tab-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+    color: #e0e0e0;
 }
 
 .tab-btn.active {
-    background: white;
-    color: #667eea;
+    background: #64b5f6;
+    color: #0f0f0f;
 }
 
 .tab-content {
@@ -488,15 +566,22 @@ section h2 {
 .search-box input {
     width: 100%;
     padding: 12px 15px;
-    border: 2px solid #e0e0e0;
+    background: #0f0f0f;
+    border: 2px solid #2a2a3e;
     border-radius: 8px;
     font-size: 1rem;
+    color: #e0e0e0;
     transition: border-color 0.3s;
 }
 
 .search-box input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #64b5f6;
+    background: #151520;
+}
+
+.search-box input::placeholder {
+    color: #666;
 }
 
 .filter-sort {
@@ -508,16 +593,19 @@ section h2 {
 
 .filter-sort select {
     padding: 10px 15px;
-    border: 2px solid #e0e0e0;
+    background: #0f0f0f;
+    border: 2px solid #2a2a3e;
     border-radius: 8px;
     font-size: 0.9rem;
+    color: #e0e0e0;
     cursor: pointer;
     transition: border-color 0.3s;
 }
 
 .filter-sort select:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #64b5f6;
+    background: #151520;
 }
 
 /* Follow-up Indicator */
@@ -542,19 +630,67 @@ section h2 {
 }
 
 .follow-up-needed {
-    background-color: #fff3cd !important;
-    border-left: 4px solid #ffc107;
+    background-color: #3e2723 !important;
+    border-left: 4px solid #ff9800;
 }
 
 .old-application {
-    background-color: #f8d7da !important;
-    border-left: 4px solid #dc3545;
+    background-color: #4a1a1a !important;
+    border-left: 4px solid #f44336;
 }
 
 /* Authentication Modal */
 .auth-modal-content {
     max-width: 450px;
     padding: 40px;
+    background: #1a1a2e;
+    border: 1px solid #2a2a3e;
+    color: #e0e0e0;
+}
+
+.auth-logo-container {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #2a2a3e;
+}
+
+.auth-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, rgba(100, 181, 246, 0.2) 0%, rgba(66, 165, 245, 0.2) 100%);
+    border-radius: 16px;
+    border: 2px solid rgba(100, 181, 246, 0.3);
+    padding: 10px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.auth-logo:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(100, 181, 246, 0.3);
+    border-color: rgba(100, 181, 246, 0.5);
+}
+
+.auth-title {
+    font-size: 2.5rem;
+    margin: 0 0 8px 0;
+    background: linear-gradient(135deg, #64b5f6 0%, #42a5f5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.auth-subtitle {
+    font-size: 0.95rem;
+    color: #b0b0b0;
+    margin: 0;
+    font-weight: 400;
 }
 
 .auth-tabs {
@@ -568,7 +704,7 @@ section h2 {
     padding: 12px 30px;
     border: none;
     background: transparent;
-    color: #666;
+    color: #888;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -578,12 +714,12 @@ section h2 {
 }
 
 .auth-tab-btn:hover {
-    color: #667eea;
+    color: #64b5f6;
 }
 
 .auth-tab-btn.active {
-    color: #667eea;
-    border-bottom-color: #667eea;
+    color: #64b5f6;
+    border-bottom-color: #64b5f6;
 }
 
 .auth-form {
@@ -594,20 +730,22 @@ section h2 {
     display: block;
 }
 
-.auth-form h2 {
-    color: #667eea;
+.auth-form-title {
+    color: #64b5f6;
     margin-bottom: 25px;
     text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
 }
 
 .auth-switch {
     text-align: center;
     margin-top: 20px;
-    color: #666;
+    color: #888;
 }
 
 .auth-switch a {
-    color: #667eea;
+    color: #64b5f6;
     text-decoration: none;
     font-weight: 600;
 }
@@ -630,14 +768,16 @@ section h2 {
 }
 
 .modal-content {
-    background-color: white;
+    background-color: #1a1a2e;
+    border: 1px solid #2a2a3e;
     margin: 5% auto;
     padding: 30px;
     border-radius: 12px;
     width: 90%;
     max-width: 700px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
     position: relative;
+    color: #e0e0e0;
 }
 
 .close {
@@ -646,13 +786,13 @@ section h2 {
     top: 20px;
     font-size: 2rem;
     font-weight: bold;
-    color: #aaa;
+    color: #888;
     cursor: pointer;
     transition: color 0.3s;
 }
 
 .close:hover {
-    color: #333;
+    color: #e0e0e0;
 }
 
 .timeline {
@@ -662,8 +802,8 @@ section h2 {
 .timeline-item {
     padding: 15px;
     margin-bottom: 15px;
-    border-left: 3px solid #667eea;
-    background-color: #f8f9fa;
+    border-left: 3px solid #64b5f6;
+    background-color: #0f0f0f;
     border-radius: 4px;
     position: relative;
 }
@@ -676,22 +816,22 @@ section h2 {
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background-color: #667eea;
+    background-color: #64b5f6;
 }
 
 .timeline-item h4 {
     margin-bottom: 5px;
-    color: #667eea;
+    color: #64b5f6;
 }
 
 .timeline-item .timeline-date {
     font-size: 0.85rem;
-    color: #666;
+    color: #888;
     margin-bottom: 8px;
 }
 
 .timeline-item .timeline-notes {
-    color: #555;
+    color: #b0b0b0;
     font-size: 0.9rem;
 }
 
@@ -708,13 +848,14 @@ section h2 {
 }
 
 .stat-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
     color: white;
     padding: 30px;
     border-radius: 12px;
     text-align: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     transition: transform 0.3s;
+    border: 1px solid #3f51b5;
 }
 
 .stat-card:hover {
@@ -738,15 +879,16 @@ section h2 {
 }
 
 .chart-container {
-    background: white;
+    background: #1a1a2e;
+    border: 1px solid #2a2a3e;
     padding: 30px;
     border-radius: 12px;
     margin-bottom: 30px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
 .chart-container h3 {
-    color: #667eea;
+    color: #64b5f6;
     margin-bottom: 20px;
     font-size: 1.3rem;
 }
@@ -757,8 +899,8 @@ section h2 {
 
 /* View Timeline Button */
 .btn-view-timeline {
-    background-color: #667eea;
-    color: white;
+    background-color: #64b5f6;
+    color: #0f0f0f;
     padding: 6px 12px;
     font-size: 0.85rem;
     border: none;
@@ -770,7 +912,7 @@ section h2 {
 }
 
 .btn-view-timeline:hover {
-    background-color: #764ba2;
+    background-color: #42a5f5;
     transform: translateY(-1px);
 }
 
@@ -784,5 +926,128 @@ section h2 {
     font-size: 0.75rem;
     font-weight: 600;
     margin-left: 5px;
+}
+
+/* Resume Management Styles */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.resumes-list {
+    margin-top: 20px;
+}
+
+.resume-card {
+    background: #1a1a2e;
+    border: 1px solid #2a2a3e;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.3s;
+}
+
+.resume-card:hover {
+    border-color: #64b5f6;
+    box-shadow: 0 5px 15px rgba(100, 181, 246, 0.2);
+}
+
+.resume-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.resume-card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #64b5f6;
+    margin: 0 0 5px 0;
+}
+
+.resume-card-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.resume-card-info {
+    color: #b0b0b0;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.resume-applications {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #2a2a3e;
+    font-size: 0.9rem;
+}
+
+.resume-applications ul {
+    list-style-type: disc;
+}
+
+.resume-applications li {
+    margin: 5px 0;
+}
+
+.resume-card-type {
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: #283593;
+    color: #90caf9;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.resume-card-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.resume-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: #283593;
+    color: #90caf9;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.form-group input[type="file"] {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.form-group input[type="file"]::file-selector-button {
+    padding: 8px 15px;
+    background: #64b5f6;
+    color: #0f0f0f;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-right: 10px;
+    transition: all 0.3s;
+}
+
+.form-group input[type="file"]::file-selector-button:hover {
+    background: #42a5f5;
 }
 

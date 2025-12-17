@@ -4,6 +4,7 @@ let statusChart = null;
 let timeChart = null;
 let filteredApplications = [];
 let currentUser = null;
+let resumes = [];
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -40,8 +41,9 @@ function showMainApp() {
         userNameEl.textContent = `👤 ${currentUser.name}`;
     }
     
-    // Load user's applications
+    // Load user's applications and resumes
     loadApplications();
+    loadResumes();
     filterApplications();
     
     // Update analytics if on analytics tab
@@ -288,6 +290,7 @@ function handleFormSubmit(e) {
         notes: notes,
         followUpNeeded: followUpNeeded,
         interviewDates: interviewDate ? [interviewDate] : [],
+        resumeId: resumeId || null,
         statusHistory: [{
             status: status,
             date: dateApplied,
@@ -444,10 +447,17 @@ function createApplicationRow(app) {
         ? `<span class="interview-badge">📅 ${app.interviewDates.length} interview${app.interviewDates.length > 1 ? 's' : ''}</span>`
         : '-';
     
+    // Get resume info
+    const resumeInfo = app.resumeId ? getResumeInfo(app.resumeId) : null;
+    const resumeDisplay = resumeInfo 
+        ? `<span class="resume-badge" title="Resume: ${escapeHtml(resumeInfo.name)} - Click to view" onclick="viewResume('${app.resumeId}')" style="cursor: pointer;">📄 ${escapeHtml(resumeInfo.name.length > 20 ? resumeInfo.name.substring(0, 20) + '...' : resumeInfo.name)}</span>`
+        : '<span style="color: #888;">-</span>';
+    
     row.innerHTML = `
         <td data-label="Company">${escapeHtml(app.companyName)}</td>
         <td data-label="Role">${escapeHtml(app.role)}</td>
         <td data-label="Date Applied">${formattedDate} ${isOld && app.status === 'Applied' ? '<span style="color: #dc3545;">⚠️</span>' : ''}</td>
+        <td data-label="Resume">${resumeDisplay}</td>
         <td data-label="Status">
             <span class="status-badge status-${app.status.toLowerCase()}">${app.status}</span>
         </td>
@@ -534,14 +544,6 @@ function viewTimeline(id) {
 // Close Timeline Modal
 function closeTimelineModal() {
     document.getElementById('timelineModal').style.display = 'none';
-}
-
-// Close modal when clicking outside
-window.onclick = function(event) {
-    const modal = document.getElementById('timelineModal');
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
 }
 
 // Edit application
@@ -842,4 +844,366 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// ==================== RESUME MANAGEMENT ====================
+
+// Load resumes from localStorage
+function loadResumes() {
+    if (!currentUser) return;
+    
+    const stored = localStorage.getItem('resumes');
+    if (stored) {
+        const allResumes = JSON.parse(stored);
+        resumes = allResumes.filter(r => r.userId === currentUser.id);
+    } else {
+        resumes = [];
+    }
+    
+    updateResumeDropdown();
+}
+
+// Save resumes to localStorage
+function saveResumes() {
+    if (!currentUser) return;
+    
+    const stored = localStorage.getItem('resumes');
+    let allResumes = stored ? JSON.parse(stored) : [];
+    
+    // Remove current user's old resumes
+    allResumes = allResumes.filter(r => r.userId !== currentUser.id);
+    
+    // Add current user's resumes
+    allResumes = allResumes.concat(resumes);
+    
+    localStorage.setItem('resumes', JSON.stringify(allResumes));
+}
+
+// Update resume dropdown in application form
+function updateResumeDropdown() {
+    const resumeSelect = document.getElementById('resumeId');
+    if (!resumeSelect) return;
+    
+    resumeSelect.innerHTML = '<option value="">-- Select Resume --</option>';
+    resumes.forEach(resume => {
+        const option = document.createElement('option');
+        option.value = resume.id;
+        option.textContent = resume.name;
+        resumeSelect.appendChild(option);
+    });
+}
+
+// Get resume info by ID
+function getResumeInfo(resumeId) {
+    return resumes.find(r => r.id === resumeId) || null;
+}
+
+// Show add resume modal
+function showAddResumeModal() {
+    if (!currentUser) {
+        alert('Please login to add resumes');
+        return;
+    }
+    
+    document.getElementById('resumeModalTitle').textContent = 'Add Resume';
+    document.getElementById('resumeForm').reset();
+    document.getElementById('resumeEditId').value = '';
+    document.getElementById('resumeFileGroup').style.display = 'block';
+    document.getElementById('resumeLinkGroup').style.display = 'none';
+    document.getElementById('resumeTextGroup').style.display = 'none';
+    document.getElementById('resumeType').value = 'file';
+    document.getElementById('resumeModal').style.display = 'block';
+}
+
+// Show edit resume modal
+function editResume(id) {
+    const resume = resumes.find(r => r.id === id);
+    if (!resume) return;
+    
+    document.getElementById('resumeModalTitle').textContent = 'Edit Resume';
+    document.getElementById('resumeEditId').value = resume.id;
+    document.getElementById('resumeName').value = resume.name;
+    document.getElementById('resumeDescription').value = resume.description || '';
+    document.getElementById('resumeType').value = resume.type || 'file';
+    
+    toggleResumeInput();
+    
+    if (resume.type === 'link') {
+        document.getElementById('resumeLink').value = resume.link || '';
+    } else if (resume.type === 'text') {
+        document.getElementById('resumeText').value = resume.text || '';
+    }
+    
+    document.getElementById('resumeModal').style.display = 'block';
+}
+
+// Toggle resume input based on type
+function toggleResumeInput() {
+    const type = document.getElementById('resumeType').value;
+    document.getElementById('resumeFileGroup').style.display = type === 'file' ? 'block' : 'none';
+    document.getElementById('resumeLinkGroup').style.display = type === 'link' ? 'block' : 'none';
+    document.getElementById('resumeTextGroup').style.display = type === 'text' ? 'block' : 'none';
+}
+
+// Handle resume form submission
+function handleResumeSubmit(e) {
+    e.preventDefault();
+    
+    if (!currentUser) {
+        alert('Please login to save resumes');
+        return;
+    }
+    
+    const resumeId = document.getElementById('resumeEditId').value;
+    const name = document.getElementById('resumeName').value.trim();
+    const type = document.getElementById('resumeType').value;
+    const description = document.getElementById('resumeDescription').value.trim();
+    
+    if (!name) {
+        alert('Please enter a resume name');
+        return;
+    }
+    
+    let resumeData = {
+        name: name,
+        type: type,
+        description: description,
+        userId: currentUser.id,
+        updatedAt: new Date().toISOString()
+    };
+    
+    // Handle file upload
+    if (type === 'file') {
+        const fileInput = document.getElementById('resumeFile');
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            if (file.size > 2 * 1024 * 1024) {
+                alert('File size should be less than 2MB');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                resumeData.fileName = file.name;
+                resumeData.fileType = file.type;
+                resumeData.fileData = e.target.result;
+                resumeData.fileSize = file.size;
+                
+                saveResumeData(resumeId, resumeData);
+            };
+            reader.readAsDataURL(file);
+            return;
+        } else if (!resumeId) {
+            alert('Please select a file');
+            return;
+        }
+    } else if (type === 'link') {
+        const link = document.getElementById('resumeLink').value.trim();
+        if (!link && !resumeId) {
+            alert('Please enter a resume link');
+            return;
+        }
+        resumeData.link = link;
+    } else if (type === 'text') {
+        const text = document.getElementById('resumeText').value.trim();
+        if (!text && !resumeId) {
+            alert('Please enter resume description');
+            return;
+        }
+        resumeData.text = text;
+    }
+    
+    saveResumeData(resumeId, resumeData);
+}
+
+// Save resume data
+function saveResumeData(resumeId, resumeData) {
+    if (resumeId) {
+        // Edit existing
+        const index = resumes.findIndex(r => r.id === resumeId);
+        if (index !== -1) {
+            resumes[index] = { ...resumes[index], ...resumeData };
+        }
+    } else {
+        // Add new
+        resumeData.id = Date.now().toString();
+        resumeData.createdAt = new Date().toISOString();
+        resumes.push(resumeData);
+    }
+    
+    saveResumes();
+    renderResumes();
+    updateResumeDropdown();
+    closeResumeModal();
+}
+
+// Delete resume
+function deleteResume(id) {
+    if (!confirm('Are you sure you want to delete this resume? Applications using this resume will lose the reference.')) {
+        return;
+    }
+    
+    resumes = resumes.filter(r => r.id !== id);
+    saveResumes();
+    renderResumes();
+    updateResumeDropdown();
+}
+
+// Render resumes list
+function renderResumes() {
+    const container = document.getElementById('resumesContainer');
+    const emptyState = document.getElementById('resumesEmptyState');
+    
+    if (!container || !emptyState) return;
+    
+    container.innerHTML = '';
+    
+    if (resumes.length === 0) {
+        container.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+    
+    container.style.display = 'block';
+    emptyState.style.display = 'none';
+    
+    resumes.forEach(resume => {
+        const card = document.createElement('div');
+        card.className = 'resume-card';
+        
+        const formattedDate = new Date(resume.updatedAt || resume.createdAt).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+        
+        let typeInfo = '';
+        if (resume.type === 'file') {
+            typeInfo = resume.fileName ? `📎 ${resume.fileName}` : '📎 File';
+        } else if (resume.type === 'link') {
+            typeInfo = `🔗 Link`;
+        } else {
+            typeInfo = `📝 Notes`;
+        }
+        
+        // Get applications using this resume
+        const applicationsUsingResume = applications.filter(app => app.resumeId === resume.id);
+        const applicationsList = applicationsUsingResume.length > 0
+            ? `<div class="resume-applications">
+                <strong style="color: #64b5f6;">Used in ${applicationsUsingResume.length} application${applicationsUsingResume.length > 1 ? 's' : ''}:</strong>
+                <ul style="margin: 8px 0 0 20px; color: #b0b0b0;">
+                    ${applicationsUsingResume.map(app => `<li>${escapeHtml(app.companyName)} - ${escapeHtml(app.role)}</li>`).join('')}
+                </ul>
+               </div>`
+            : '<div class="resume-applications" style="color: #888; font-size: 0.9rem;">Not used in any applications yet</div>';
+        
+        card.innerHTML = `
+            <div class="resume-card-header">
+                <div>
+                    <h3 class="resume-card-title">${escapeHtml(resume.name)}</h3>
+                    <div class="resume-card-meta">
+                        <span>📅 ${formattedDate}</span>
+                        <span class="resume-card-type">${typeInfo}</span>
+                    </div>
+                </div>
+                <div class="resume-card-actions">
+                    <button class="btn-small btn-view-timeline" onclick="viewResume('${resume.id}')">View</button>
+                    <button class="btn-small btn-edit" onclick="editResume('${resume.id}')">Edit</button>
+                    <button class="btn-small btn-delete" onclick="deleteResume('${resume.id}')">Delete</button>
+                </div>
+            </div>
+            ${resume.description ? `<div class="resume-card-info">${escapeHtml(resume.description)}</div>` : ''}
+            ${resume.type === 'link' && resume.link ? `<div class="resume-card-info"><a href="${escapeHtml(resume.link)}" target="_blank" style="color: #64b5f6;">${escapeHtml(resume.link)}</a></div>` : ''}
+            ${applicationsList}
+        `;
+        
+        container.appendChild(card);
+    });
+}
+
+// View resume
+function viewResume(id) {
+    const resume = resumes.find(r => r.id === id);
+    if (!resume) return;
+    
+    if (resume.type === 'file' && resume.fileData) {
+        // Open file in new tab
+        const newWindow = window.open();
+        if (newWindow) {
+            newWindow.document.write(`
+                <html>
+                    <head><title>${escapeHtml(resume.name)}</title></head>
+                    <body style="margin:0; padding:0;">
+                        <iframe src="${resume.fileData}" style="width:100%; height:100vh; border:none;"></iframe>
+                    </body>
+                </html>
+            `);
+        } else {
+            // Fallback: download the file
+            const link = document.createElement('a');
+            link.href = resume.fileData;
+            link.download = resume.fileName || 'resume.pdf';
+            link.click();
+        }
+    } else if (resume.type === 'link' && resume.link) {
+        // Open link in new tab
+        window.open(resume.link, '_blank');
+    } else if (resume.type === 'text' && resume.text) {
+        // Show text in modal
+        const modal = document.getElementById('resumeModal');
+        const modalTitle = document.getElementById('resumeModalTitle');
+        const modalContent = document.createElement('div');
+        
+        modalTitle.textContent = resume.name;
+        modalContent.innerHTML = `
+            <div style="padding: 20px; background: #0f0f0f; border-radius: 8px; margin-top: 20px;">
+                <h3 style="color: #64b5f6; margin-bottom: 15px;">Resume Notes</h3>
+                <div style="color: #e0e0e0; white-space: pre-wrap; line-height: 1.6;">${escapeHtml(resume.text)}</div>
+            </div>
+            <div style="margin-top: 20px; text-align: right;">
+                <button class="btn btn-primary" onclick="closeResumeModal()">Close</button>
+            </div>
+        `;
+        
+        // Hide form and show content
+        const form = document.getElementById('resumeForm');
+        form.style.display = 'none';
+        modal.appendChild(modalContent);
+        
+        modal.style.display = 'block';
+        
+        // Store reference to remove later
+        modalContent.dataset.tempContent = 'true';
+    } else {
+        alert('Resume content not available');
+    }
+}
+
+// Close resume modal
+function closeResumeModal() {
+    const modal = document.getElementById('resumeModal');
+    const form = document.getElementById('resumeForm');
+    
+    // Remove any temporary content
+    const tempContent = modal.querySelector('[data-temp-content="true"]');
+    if (tempContent) {
+        tempContent.remove();
+    }
+    
+    form.style.display = 'block';
+    modal.style.display = 'none';
+    document.getElementById('resumeForm').reset();
+}
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const timelineModal = document.getElementById('timelineModal');
+    const resumeModal = document.getElementById('resumeModal');
+    
+    if (event.target === timelineModal) {
+        timelineModal.style.display = 'none';
+    }
+    if (event.target === resumeModal) {
+        resumeModal.style.display = 'none';
+    }
 }

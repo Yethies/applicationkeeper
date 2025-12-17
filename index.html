@@ -117,6 +117,7 @@
         <nav class="tabs">
             <button class="tab-btn active" onclick="showTab('applications')">Applications</button>
             <button class="tab-btn" onclick="showTab('analytics')">📊 Analytics</button>
+            <button class="tab-btn" onclick="showTab('resumes')">📄 Resumes</button>
         </nav>
 
         <!-- Applications Tab Content -->
@@ -156,6 +157,14 @@
                     <div class="form-group">
                         <label for="interviewDate">Interview Date (Optional)</label>
                         <input type="date" id="interviewDate" placeholder="If applicable">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="resumeId">Resume Used (Optional)</label>
+                        <select id="resumeId">
+                            <option value="">-- Select Resume --</option>
+                        </select>
+                        <small style="color: #888; font-size: 0.85rem; margin-top: 5px; display: block;">Manage resumes in the Resumes tab</small>
                     </div>
                     
                     <div class="form-group">
@@ -217,6 +226,7 @@
                                 <th>Company</th>
                                 <th>Role</th>
                                 <th>Date Applied</th>
+                                <th>Resume</th>
                                 <th>Status</th>
                                 <th>Follow-up</th>
                                 <th>Actions</th>
@@ -225,6 +235,25 @@
                         <tbody id="applicationsTableBody">
                         </tbody>
                     </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Resumes Tab Content -->
+        <div id="resumesTab" class="tab-content">
+            <section class="resumes-section">
+                <div class="section-header">
+                    <h2>📄 Resume Management</h2>
+                    <button class="btn btn-primary" onclick="showAddResumeModal()">+ Add Resume</button>
+                </div>
+                
+                <div id="resumesList" class="resumes-list">
+                    <div class="empty-state" id="resumesEmptyState">
+                        <p>No resumes yet. Add your first resume above!</p>
+                    </div>
+                    <div id="resumesContainer" style="display: none;">
+                        <!-- Resumes will be dynamically added here -->
+                    </div>
                 </div>
             </section>
         </div>
@@ -275,6 +304,58 @@
                 <span class="close" onclick="closeTimelineModal()">&times;</span>
                 <h2 id="modalCompanyName">Application Timeline</h2>
                 <div id="timelineContent"></div>
+            </div>
+        </div>
+
+        <!-- Add/Edit Resume Modal -->
+        <div id="resumeModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeResumeModal()">&times;</span>
+                <h2 id="resumeModalTitle">Add Resume</h2>
+                <form id="resumeForm" onsubmit="handleResumeSubmit(event)">
+                    <div class="form-group">
+                        <label for="resumeName">Resume Name *</label>
+                        <input type="text" id="resumeName" required placeholder="e.g., Software Engineer Resume, Updated 2024">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="resumeType">Resume Type</label>
+                        <select id="resumeType" onchange="toggleResumeInput()">
+                            <option value="file">Upload File</option>
+                            <option value="link">Link/URL</option>
+                            <option value="text">Text/Description</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="resumeFileGroup">
+                        <label for="resumeFile">Resume File (PDF, DOC, DOCX)</label>
+                        <input type="file" id="resumeFile" accept=".pdf,.doc,.docx">
+                        <small style="color: #888; font-size: 0.85rem; display: block; margin-top: 5px;">
+                            Note: Files are stored in browser. Max recommended size: 2MB
+                        </small>
+                    </div>
+                    
+                    <div class="form-group" id="resumeLinkGroup" style="display: none;">
+                        <label for="resumeLink">Resume Link/URL</label>
+                        <input type="url" id="resumeLink" placeholder="https://example.com/resume.pdf">
+                    </div>
+                    
+                    <div class="form-group" id="resumeTextGroup" style="display: none;">
+                        <label for="resumeText">Resume Description/Notes</label>
+                        <textarea id="resumeText" rows="4" placeholder="Add notes about this resume version..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="resumeDescription">Description (Optional)</label>
+                        <textarea id="resumeDescription" rows="3" placeholder="Add any additional notes about this resume..."></textarea>
+                    </div>
+                    
+                    <input type="hidden" id="resumeEditId" value="">
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-cancel" onclick="closeResumeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Resume</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
